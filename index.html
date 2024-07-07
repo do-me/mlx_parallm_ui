@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/13.0.2/lib/marked.umd.min.js"></script>
+
+    <style>
+        .spinner {
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-xl mx-auto">
+    <div class="mb-6 text-center">
+        <h1 class="text-4xl font-bold text-gray-800">MLX ParaLLM UI</h1>
+        <p class="text-lg text-gray-600 mt-2">
+            A minimal UI for parallel inferencing based on
+            <a href="https://github.com/willccbb/mlx_parallm" target="_blank" class="text-blue-500 underline">MLX ParaLLM</a>.<br>
+            <a href="https://github.com/do-me/mlx_parallm_ui" target="_blank" class="text-blue-500 underline">GitHub repo here</a>.
+            Processing many prompts at once leads to higher throughput (tokens/s) on Apple Silicon.
+            See <a href="https://github.com/willccbb/mlx_parallm/pull/5" target="_blank" class="text-blue-500 underline">benchmarks</a> and 
+            <a href="https://twitter.com/DomeGIS/status/1808012696538751098" target="_blank" class="text-blue-500 underline">tweet</a>.
+        </p>
+    </div>
+    
+    <!-- Model Selection Dropdown -->
+    <div class="mb-6">
+        <label for="model-select" class="block text-base font-medium text-gray-800 mb-2">Select Model (downloads once in your backend)</label>
+        <select id="model-select" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
+            <option value="mlx-community/Meta-Llama-3-8B-Instruct-4bit">Meta-Llama-3-8B-Instruct-4bit</option>
+            <option value="mlx-community/Phi-3-mini-4k-instruct-4bit">Phi-3-mini-4k-instruct-4bit</option>
+            <option value="mlx-community/gemma-1.1-2b-it-4bit">gemma-1.1-2b-it-4bit</option>
+        </select>
+    </div>
+
+    <!-- Max Tokens Input Field -->
+    <div class="mb-6">
+        <label for="max-tokens" class="block text-base font-medium text-gray-800 mb-2">Max Tokens</label>
+        <input id="max-tokens" type="number" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" value="50">
+    </div>
+
+    <!-- Text Input Field -->
+    <div class="mb-6">
+        <label for="feedback" class="block text-base font-medium text-gray-800 mb-2">Paste text to analyze</label>
+        <textarea id="feedback" rows="5" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
+I like apples. I see them, I eat them. Then I write down the taste and a score between 1 and 10.
+        </textarea>
+    </div>
+
+    <!-- Question Boxes Section -->
+    <div id="question-section" class="mb-6">
+        <label class="block text-base font-medium text-gray-800 mb-2">Questions about the text</label>
+        <div id="questions">
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What is the main hypothesis or research question of the study?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What methodology or experimental design is used in the study?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What are the key findings or results of the study?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="How do the results compare with previous studies or existing literature?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What are the limitations or potential sources of error in the study?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What are the implications or potential applications of the research findings?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What background information or theoretical framework is necessary to understand the study?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What are the key terms and definitions used in the study?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="What future research directions do the authors suggest?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>
+            <div class="flex flex-col mb-4 question-box">
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mr-2 question-input" value="How do the authors support their conclusions or interpretations of the data?">
+                <div class="answer text-sm text-gray-600"></div>
+            </div>            
+        </div>
+        <button id="add-question" type="button" class="bg-green-500 text-white px-4 py-2 rounded-md mt-2 focus:outline-none">+ Add Question</button>
+    </div>
+
+    <!-- Submit Button -->
+    <button id="submit-button" type="button" class="bg-blue-500 text-white px-6 py-3 rounded-md focus:outline-none">
+        Process in Parallel
+    </button>
+
+    <!-- Time Display -->
+    <div id="time-taken" class="mt-4 text-sm text-gray-800"></div>
+</div>
+
+<script>
+    window.onload = function() {
+        const addQuestionButton = document.getElementById('add-question');
+        const questionsContainer = document.getElementById('questions');
+
+        addQuestionButton.addEventListener('click', function () {
+            const newQuestionBox = document.createElement('div');
+            newQuestionBox.className = 'flex flex-col mb-4 question-box';
+            newQuestionBox.innerHTML = `
+                <input type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md mb-2 question-input" value="New Question">
+                <div class="answer text-sm text-gray-600"></div>
+            `;
+            questionsContainer.appendChild(newQuestionBox);
+        });
+
+        const submitButton = document.getElementById('submit-button');
+        submitButton.addEventListener('click', function () {
+            const context = document.getElementById('feedback').value;
+            const selectedModel = document.getElementById('model-select').value;
+            const maxTokens = document.getElementById('max-tokens').value;
+            const prompts = [];
+
+            document.querySelectorAll('#questions .question-input').forEach(function (input) {
+                prompts.push(input.value);
+            });
+
+            const data = {
+                model: selectedModel,
+                context: context,
+                max_tokens: maxTokens,
+                prompts: prompts
+            };
+
+            const startTime = new Date().getTime(); // Start time
+
+            // Disable the button and show the spinner
+            submitButton.disabled = true;
+            submitButton.innerHTML = `<div class="spinner"></div> Processing...`;
+
+            // Send JSON data to the server
+            fetch('http://localhost:8000/process_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const endTime = new Date().getTime(); // End time
+                const timeTaken = endTime - startTime; // Time taken in milliseconds
+
+                console.log('Response from server:', data);
+                const answerElements = document.querySelectorAll('#questions .answer');
+                data.responses.forEach((answer, index) => {
+                    answerElements[index].innerHTML = marked.marked(answer);
+                });
+
+                const timeTakenElement = document.getElementById('time-taken');
+                timeTakenElement.textContent = `Time taken: ${timeTaken} ms`;
+
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Process in Parallel';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Process in Parallel';
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
