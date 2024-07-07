@@ -12,5 +12,9 @@ A minimal UI for parallel inferencing based on https://github.com/willccbb/mlx_p
 
 Inferencing for the first time downloads the model once to your computer.
 
+## Idea 
+Keep it super simple to set up. Using tailwind css and marked js dependencies from a cdn. 
+As soon as mlx_parallm becomes a pip package, installation will become easier.
 
-
+## Notes 
+Note that MLX is specific for Apple Silicon, so you can only run it on the M-series of Macs. Tested on a Mac M3 Max 128Gb.
