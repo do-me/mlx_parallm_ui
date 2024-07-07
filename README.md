@@ -3,3 +3,14 @@ A minimal UI for parallel inferencing based on https://github.com/willccbb/mlx_p
 
 ![image](https://github.com/do-me/mlx_parallm_ui/assets/47481567/6d43145c-5922-4332-944c-91de7cd684ff)
 
+## Installation 
+
+1. Follow the setup instructions in https://github.com/willccbb/mlx_parallm, best install dependencies in a virtual env
+2. Copy the files from this repo into `mlx_parallm` (main dir) 
+3. `pip install fastapi==0.95.1 pydantic==1.10.4 starlette==0.27.0 uvicorn==0.22.0` to install missing dependencies
+4. Run the fastapi server with `python fastapi_server.py` and open localhost:8000 in your browser
+
+Inferencing for the first time downloads the model once to your computer.
+
+
+
